@@ -9,7 +9,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
-
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import java.util.Base64;
 import java.util.List;
 
@@ -20,7 +20,8 @@ import javax.crypto.spec.SecretKeySpec;
 import software.amazon.awssdk.services.sqs.model.Message;
 
 import java.nio.charset.StandardCharsets;
-
+import java.time.Duration;
+import java.net.URI;
 /* Hello world!
  *
  */
@@ -31,7 +32,7 @@ public class App
         System.out.println( "Hello World!" );
         
         App app = new App();
-        String token = app.GetToken("<username>","<password>", "<clientid>");
+        String token = app.GetToken("<username>","<password>", "<client id>");
         System.out.println("Token: "+token);
         
         JsonNode newsResponse = app.SubscribeNewsStories(token);
@@ -82,8 +83,10 @@ public class App
 
     	SqsClient sqsClient = SqsClient.builder()
     	  .region(Region.US_EAST_1)    	
-    	  .credentialsProvider(()->credentials)  	 
-    	 
+    	  .credentialsProvider(()->credentials)  
+//    	  .httpClientBuilder(UrlConnectionHttpClient.builder()
+//                  .socketTimeout(Duration.ofMinutes(5))
+//                  .proxyConfiguration(proxy -> proxy.endpoint(URI.create("http://localhost:8080"))))    	 
     	  .build();
     	
     	System.out.println(endpoint);
